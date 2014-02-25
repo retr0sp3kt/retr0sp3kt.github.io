@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="robots" content="noindex" />
+<title>Wikplayer</title>
+<!-- Load reset.css -->
+<style type="text/css">
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { 
+margin: 0; padding: 0; border: none; outline-style: none; font-size: 100%; font-size: 100%; background: transparent; background-image: none; }
+body { line-height: 1;}
+ol, ul {}blockquote, q { quotes: none;}:focus { outline-width: 0px;outline-style: none;}ins { text-decoration: none;}del { text-decoration: line-through;}table { border-collapse: collapse;border-spacing: 0px;}
+</style>
+<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<style type="text/css">
+body{overflow:hidden; background:transparent; }
+#contentW, #playlistW, #playerW{ position:absolute; overflow:hidden;}
+#contentW{z-index:10; top:0; bottom:0; left:0; right:0;}
+#playlistW{ z-index:15; right:0; top:0; bottom:0; width:0; }
+#playerW{z-index:20 ; left:0; right:0; height:0;}
+#content{ position:relative; height:100%; width:100%;  }
+</style>
+<link rel="stylesheet" type="text/css" href="css/wik.css" />
+<link rel="stylesheet" type="text/css" data-bind="attr:{href:skin}" id="skin" />
+
+<!-- Adzerk ads -->
+<script type="text/javascript">var p="http",d="static";if(document.location.protocol=="https:"){p+="s";d="engine";}var z=document.createElement("script");z.type="text/javascript";z.async=true;z.src=p+"://"+d+".adzerk.net/ados.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(z,s);</script>
+<script type="text/javascript">
+var ados = ados || {};
+ados.run = ados.run || [];
+ados.run.push(function() {
+/* load placement for account: hengsok, site: wikplayer, size: 180x150 - Rectangle, zone: playlist*/
+ados_add_placement(7311, 49589, "azk57147", 9).setZone(46831);
+ados_load();
+});</script>
+
+
+
+</head>
+<body>
+	<div id="contentW" data-bind="style:{top:placement()=='top'?'25px':'0',
+		bottom:placement()!='bottom' ?'0':'25px', right:showPlaylist() && placement()!='hybrid'?'302px':'0'}">
+<script type="text/javascript">
+(function(){
+ 	if(window==window.parent)
+		location.href = 'http://www.wikplayer.com';
+	var addEvent = function(elm, evType, fn) {
+			if(elm.addEventListener) 
+				elm.addEventListener(evType, fn);
+			else if (elm.attachEvent) 
+				elm.attachEvent('on' + evType, fn);
+			else
+				elm['on' + evType] = fn;
+		},
+		url = location.hash.substr(1),
+		host = url.substr(0,url.indexOf('/',10));
+
+	window.WIKQueue = [];
+	addEvent(window,'message',function(e){
+		var data = e.data;
+		if(data.indexOf('WIK')!=0) 
+			return;
+		if(window.WIK && window.Song)
+			(new Function("WIK,Song",data))(WIK,Song);
+		else
+			WIKQueue.push(data);
+	});
+	document.write('<iframe src="javascript:location.replace(\''+url+'\');" frameborder="0" id="content" allowtransparency="true" name="content"></iframe>');
+})();
+</script>
+</div>
+<div id="playerW"  data-bind="style:{ top:placement()=='top'?'0':'auto', 
+	bottom:placement()=='top'?'auto':'0',height:placement()=='hybrid'?'45px':'25px'}"></div>
+<div id="playlistW" data-bind="style:{top:placement()=='top'?'25px':'0',
+		bottom:placement()=='top'?'0':'25px', width:showPlaylist() && placement()!='hybrid'?'302px':'0'}">
+	<div id="playlist">
+        <div class="module"> 
+            <h3>Playlist</h3> 
+        </div> 
+        <div class="module" id="playlistContainer">
+
+            <ol class="items" data-bind="foreach:playlist" style="bottom:0px;"> 
+                <li class="item" data-bind="
+                visible:isValid(),
+                click:$root.play,
+                attr:{title:title},
+                css:{focus:on, even:$index()%2==1, odd:$index()%2==0}
+                ">
+                    <span class="title" data-bind="text:title"></span>&nbsp;
+                </li> 
+            </ol> 
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/lib/soundmanager/soundmanager2-nodebug-jsmin.js"></script>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" >
+var _gaq=_gaq||[];_gaq.push(["_setAccount","UA-37916255-1"]);_gaq.push(["_trackPageview"]);require(["knockout","jquery","underscore","text!view/player.html","text!view/playerHybrid.html","wik","song","wik.ui","binding/slider","binding/wik","jquery.tooltipster"],function(ko,$,_,playerView,playerHybrid,WIK,Song){var config=WIK.config;WIK.config=_.once(function(data){config(data);if(WIK.placement()=="hybrid"){$("#playerW").css("width","550px");$("#playerW").css("right","0px");$("#playerW").css("left","auto");$("#playerW").html(playerHybrid);$("#wikHybridPlayer").hover(function(){$("#playerW").css("height","420px");$("#wikHybridPlayer").stop().animate({"bottom":"-2px"},400);},function(){setTimeout(function(){$("#playerW").css("height","45px");},300);$("#wikHybridPlayer").stop().animate({"bottom":"-373px"},400);});}else{$("#playerW").html(playerView);}ko.applyBindings(WIK,$("#skin").get(0));setTimeout(function(){$("#contentW,#playerW,#playlistW").each(function(){ko.applyBindings(WIK,this);$(this).mousedown(function(){return false;});});},200);});while(WIKQueue.length>0){(new Function("WIK,Song",WIKQueue.shift()))(WIK,Song);}window.WIK=WIK;window.Song=Song;var resize=function(){$("#content").height($("#contentW").height());};$(window).resize(_.throttle(resize,100));resize();if(WIK.placement()=="hybrid"&&WIK.includeComment()){(function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return;}js=d.createElement(s);js.id=id;js.src="//connect.facebook.net/en_US/all.js#xfbml=1&appId=399760516783508";fjs.parentNode.insertBefore(js,fjs);}(document,"script","facebook-jssdk"));}if(WIK.marqueeTextOn()){setTimeout(function(){$(".jp-scrollingtext").bind("marquee",function(){var ob=$(this);var tw=ob.width();var ww=ob.parent().width();ob.css({right:-tw});ob.animate({right:ww},20000,"linear",function(){ob.trigger("marquee");});}).trigger("marquee");},3000);}require(["http://www.google-analytics.com/ga.js"]);});
+</script>
+
+</body>
+</html>
+
